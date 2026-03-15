@@ -18,6 +18,7 @@ public class VisorController {
     private VisorView vista;
     private Stage escenarioPrincipal;
     private List<Image> listaImagenes = new ArrayList<>();
+    private int indiceActual = 0;
 
     // El constructor une la vista con el controlador
     public VisorController(VisorView vista, Stage escenarioPrincipal) {
@@ -41,6 +42,34 @@ public class VisorController {
                 vista.getLblEstado().setText("Operación cancelada.");
             }
         });
+        vista.getVistaCentral().setOnScroll(evento -> {
+            // Si la lista está vacía, no hacemos nada
+            if (listaImagenes.isEmpty()) return;
+
+            // getDeltaY() nos dice la dirección: positivo es hacia arriba, negativo hacia abajo
+            double movimientoY = evento.getDeltaY();
+
+            if (movimientoY > 0) {
+                // Rueda hacia arriba: Avanzamos (profundizamos)
+                indiceActual++;
+            } else if (movimientoY < 0) {
+                // Rueda hacia abajo: Retrocedemos (salimos)
+                indiceActual--;
+            }
+
+            // Validaciones de seguridad (Límites) para que el programa no colapse
+            if (indiceActual < 0) {
+                indiceActual = 0; // Topamos con el primer corte
+            } else if (indiceActual >= listaImagenes.size()) {
+                indiceActual = listaImagenes.size() - 1; // Topamos con el último corte
+            }
+
+            // Actualizamos la imagen mostrada
+            vista.getVistaCentral().setImage(listaImagenes.get(indiceActual));
+
+            // Opcional: Mostramos en qué corte estamos en la barra inferior
+            vista.getLblEstado().setText("Corte: " + (indiceActual + 1) + " / " + listaImagenes.size());
+        });
     }
 
     // Nuestro motor de Streams intacto, pero actualizando los componentes a través de "vista.get..."
@@ -60,6 +89,7 @@ public class VisorController {
             if (listaImagenes.isEmpty()) {
                 vista.getLblEstado().setText("No se encontraron imágenes (.jpg o .png).");
             } else {
+                indiceActual = 0;
                 vista.getLblEstado().setText("Éxito: Se cargaron " + listaImagenes.size() + " cortes.");
                 vista.getVistaCentral().setImage(listaImagenes.get(0));
             }
