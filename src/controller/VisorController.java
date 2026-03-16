@@ -1,5 +1,10 @@
 package controller;
 
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
+
 import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -49,10 +54,10 @@ public class VisorController {
             // getDeltaY() nos dice la dirección: positivo es hacia arriba, negativo hacia abajo
             double movimientoY = evento.getDeltaY();
 
-            if (movimientoY > 0) {
+            if (movimientoY < 0) {
                 // Rueda hacia arriba: Avanzamos (profundizamos)
                 indiceActual++;
-            } else if (movimientoY < 0) {
+            } else if (movimientoY > 0) {
                 // Rueda hacia abajo: Retrocedemos (salimos)
                 indiceActual--;
             }
@@ -65,10 +70,20 @@ public class VisorController {
             }
 
             // Actualizamos la imagen mostrada
-            vista.getVistaCentral().setImage(listaImagenes.get(indiceActual));
+            //vista.getVistaCentral().setImage(listaImagenes.get(indiceActual));
+
+            //Inicializamos los filtros
+            aplicarFiltros();
 
             // Opcional: Mostramos en qué corte estamos en la barra inferior
             vista.getLblEstado().setText("Corte: " + (indiceActual + 1) + " / " + listaImagenes.size());
+        });
+        vista.getSliderBrillo().valueProperty().addListener((observable, valorViejo, valorNuevo) -> {
+            aplicarFiltros();
+        });
+
+        vista.getSliderContraste().valueProperty().addListener((observable, valorViejo, valorNuevo) -> {
+            aplicarFiltros();
         });
     }
 
@@ -91,11 +106,56 @@ public class VisorController {
             } else {
                 indiceActual = 0;
                 vista.getLblEstado().setText("Éxito: Se cargaron " + listaImagenes.size() + " cortes.");
-                vista.getVistaCentral().setImage(listaImagenes.get(0));
+
+                //vista.getVistaCentral().setImage(listaImagenes.get(0));
+
+                aplicarFiltros();
             }
 
         } catch (Exception e) {
             vista.getLblEstado().setText("Error al leer la carpeta: " + e.getMessage());
         }
+    }
+
+    // Método matemático para mantener el color entre 0.0 y 1.0
+    private double limitarColor(double valor) {
+        if (valor < 0.0) return 0.0;
+        if (valor > 1.0) return 1.0;
+        return valor;
+    }
+
+    // El motor de procesamiento
+    private void aplicarFiltros() {
+        if (listaImagenes.isEmpty()) return;
+
+        Image imagenOriginal = listaImagenes.get(indiceActual);
+        int ancho = (int) imagenOriginal.getWidth();
+        int alto = (int) imagenOriginal.getHeight();
+
+        // Creamos un lienzo en blanco del mismo tamaño
+        WritableImage imagenModificada = new WritableImage(ancho, alto);
+        PixelReader lector = imagenOriginal.getPixelReader();
+        PixelWriter escritor = imagenModificada.getPixelWriter();
+
+        double brillo = vista.getSliderBrillo().getValue();
+        double contraste = vista.getSliderContraste().getValue();
+
+        // Recorremos cada píxel de la imagen (Matriz 2D)
+        for (int y = 0; y < alto; y++) {
+            for (int x = 0; x < ancho; x++) {
+                Color colorViejo = lector.getColor(x, y);
+
+                // Aplicamos la fórmula matemática a los canales RGB
+                double r = limitarColor((colorViejo.getRed() - 0.5) * contraste + 0.5 + brillo);
+                double g = limitarColor((colorViejo.getGreen() - 0.5) * contraste + 0.5 + brillo);
+                double b = limitarColor((colorViejo.getBlue() - 0.5) * contraste + 0.5 + brillo);
+
+                // Pintamos el nuevo píxel en la imagen modificada
+                escritor.setColor(x, y, new Color(r, g, b, colorViejo.getOpacity()));
+            }
+        }
+
+        // Mostramos la imagen ya procesada
+        vista.getVistaCentral().setImage(imagenModificada);
     }
 }
