@@ -1,5 +1,9 @@
 package view;
 
+import javafx.scene.shape.Line;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+
 import javafx.scene.control.Slider;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,6 +19,8 @@ public class VisorView {
     private ImageView vistaCentral;
     private Slider sliderBrillo;
     private Slider sliderContraste;
+    private Line lineaMedicion;
+    private Label lblDistancia;
 
     public VisorView() {
         // 1. Inicializar componentes
@@ -28,25 +34,40 @@ public class VisorView {
         Label lblContraste = new Label("Contraste:");
         sliderContraste = new Slider(0.0, 3.0, 1.0); // Mínimo, Máximo, Valor Inicial
 
-        vistaCentral = new ImageView();
+        lblDistancia = new Label("Distancia: 0.0 mm");
+        lblDistancia.setStyle("-fx-font-weight: bold; -fx-text-fill: red;");
 
-        // 2. Construir el diseño (Lo que tenías en tu start)
+        // 2. Configuración de la Línea de Medición
+        lineaMedicion = new Line();
+        lineaMedicion.setStroke(Color.RED);     // Color rojo médico
+        lineaMedicion.setStrokeWidth(2.0);      // Grosor de la línea
+        lineaMedicion.setVisible(false);        // La ocultamos hasta que el usuario haga clic
+
+        // 2. Construir el diseño
         raiz.setBottom(lblEstado);
 
         VBox panelIzquierdo = new VBox(10);
         panelIzquierdo.setStyle("-fx-padding: 15px; -fx-background-color: #f4f4f4;");
-        panelIzquierdo.getChildren().add(btnCargar);
-        panelIzquierdo.getChildren().add(lblBrillo);
-        panelIzquierdo.getChildren().add(sliderBrillo);
-        panelIzquierdo.getChildren().add(lblContraste);
-        panelIzquierdo.getChildren().add(sliderContraste);
+        panelIzquierdo.getChildren().addAll(
+                btnCargar,
+                lblBrillo,
+                sliderBrillo,
+                lblContraste,
+                sliderContraste,
+                lblDistancia
+        );
 
         raiz.setLeft(panelIzquierdo);
 
+        vistaCentral = new ImageView();
         vistaCentral.setPreserveRatio(true);
         vistaCentral.setFitWidth(600);
         vistaCentral.setFitHeight(600);
-        raiz.setCenter(vistaCentral);
+
+        Pane contenedorImagen = new Pane();
+        contenedorImagen.getChildren().addAll(vistaCentral, lineaMedicion);
+
+        raiz.setCenter(contenedorImagen);
     }
 
     // --- GETTERS (Encapsulamiento) ---
@@ -57,4 +78,6 @@ public class VisorView {
     public ImageView getVistaCentral() { return vistaCentral; }
     public Slider getSliderBrillo() { return sliderBrillo; }
     public Slider getSliderContraste() { return sliderContraste; }
+    public Line getLineaMedicion() { return lineaMedicion; }
+    public Label getLblDistancia() { return lblDistancia; }
 }

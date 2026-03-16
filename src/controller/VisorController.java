@@ -24,6 +24,8 @@ public class VisorController {
     private Stage escenarioPrincipal;
     private List<Image> listaImagenes = new ArrayList<>();
     private int indiceActual = 0;
+    private double inicioX;
+    private double inicioY;
 
     // El constructor une la vista con el controlador
     public VisorController(VisorView vista, Stage escenarioPrincipal) {
@@ -84,6 +86,48 @@ public class VisorController {
 
         vista.getSliderContraste().valueProperty().addListener((observable, valorViejo, valorNuevo) -> {
             aplicarFiltros();
+        });
+
+        // --- HERRAMIENTA DE MEDICIÓN ---
+
+        // 1. Cuando el médico hace CLIC
+        vista.getVistaCentral().setOnMousePressed(evento -> {
+            // Guardamos las coordenadas exactas del clic (Punto A)
+            inicioX = evento.getX();
+            inicioY = evento.getY();
+
+            // Colocamos el inicio y el fin de la línea en este punto
+            vista.getLineaMedicion().setStartX(inicioX);
+            vista.getLineaMedicion().setStartY(inicioY);
+            vista.getLineaMedicion().setEndX(inicioX);
+            vista.getLineaMedicion().setEndY(inicioY);
+
+            // Hacemos visible la línea roja
+            vista.getLineaMedicion().setVisible(true);
+        });
+
+        // 2. Cuando el médico ARRASTRA el ratón
+        vista.getVistaCentral().setOnMouseDragged(evento -> {
+            // Obtenemos las coordenadas actuales del cursor (Punto B)
+            double actualX = evento.getX();
+            double actualY = evento.getY();
+
+            // Hacemos que la punta de la línea siga al cursor
+            vista.getLineaMedicion().setEndX(actualX);
+            vista.getLineaMedicion().setEndY(actualY);
+
+            // Calculamos los catetos del triángulo
+            double catetoX = actualX - inicioX;
+            double catetoY = actualY - inicioY;
+
+            // Aplicamos Pitágoras para obtener la distancia en píxeles
+            double distanciaPixeles = Math.sqrt((catetoX * catetoX) + (catetoY * catetoY));
+
+            // Convertimos píxeles a milímetros (Simulación: 1 px = 0.5 mm)
+            double distanciaMilimetros = distanciaPixeles * 0.5;
+
+            // Mostramos el resultado en la etiqueta con 2 decimales
+            vista.getLblDistancia().setText(String.format("Distancia: %.2f mm", distanciaMilimetros));
         });
     }
 
@@ -157,5 +201,9 @@ public class VisorController {
 
         // Mostramos la imagen ya procesada
         vista.getVistaCentral().setImage(imagenModificada);
+
+        //Proceso de línea
+        vista.getLineaMedicion().setVisible(false);
+        vista.getLblDistancia().setText("Distancia: 0.0 mm");
     }
 }
