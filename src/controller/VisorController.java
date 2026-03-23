@@ -132,7 +132,7 @@ public class VisorController {
     }
 
     // Nuestro motor de Streams intacto, pero actualizando los componentes a través de "vista.get..."
-    private void cargarImagenesDesdeDirectorio(File directorio) {
+    public void cargarImagenesDesdeDirectorio(File directorio) {
         try (Stream<Path> rutas = Files.list(directorio.toPath())) {
 
             listaImagenes = rutas
