@@ -32,12 +32,16 @@ public class LoginController {
             String claveIngresada = vista.getTxtPassword().getText();
 
             if (usuarioIngresado.isEmpty() || claveIngresada.isEmpty()) {
-                vista.getLblMensaje().setStyle("-fx-text-fill: red;");
+                vista.getLblMensaje().setStyle("-fx-text-fill: red; -fx-font-weight: bold; -fx-font-size: 18px;");
                 vista.getLblMensaje().setText("Por favor, llene todos los campos.");
                 return;
             }
 
             autenticarUsuario(usuarioIngresado, claveIngresada);
+        });
+
+        vista.getBtnSalir().setOnAction(evento -> {
+            javafx.application.Platform.exit();
         });
     }
 
@@ -72,7 +76,7 @@ public class LoginController {
                 ResultSet rsMedico = pstmtMedico.executeQuery();
 
                 if (rsMedico.next()) {
-                    // ¡Encontrado! Creamos el objeto y le asignamos el rol MEDICO
+                    // ¡Encontrado! Creamos el objeto y le asignamos el rol MÉDICO
                     Usuario medicoLogueado = new Usuario(
                             rsMedico.getInt("id"),
                             rsMedico.getString("usuario"),
@@ -85,18 +89,18 @@ public class LoginController {
             }
 
             // 3. Si el código llega hasta aquí, es porque no estaba en ninguna tabla
-            vista.getLblMensaje().setStyle("-fx-text-fill: red;");
+            vista.getLblMensaje().setStyle("-fx-text-fill: red; -fx-font-weight: bold; -fx-font-size: 18px;");
             vista.getLblMensaje().setText("Usuario o clave incorrectos.");
 
         } catch (SQLException e) {
-            vista.getLblMensaje().setStyle("-fx-text-fill: red;");
+            vista.getLblMensaje().setStyle("-fx-text-fill: red; -fx-font-weight: bold; -fx-font-size: 18px;");
             vista.getLblMensaje().setText("Error de conexión con la base de datos.");
             e.printStackTrace();
         }
     }
 
     private void redirigir(Usuario usuario) {
-        vista.getLblMensaje().setStyle("-fx-text-fill: green;");
+        vista.getLblMensaje().setStyle("-fx-text-fill: #2ecc71; -fx-font-weight: bold; -fx-font-size: 18px;;");
         vista.getLblMensaje().setText("¡Acceso concedido! Bienvenido " + usuario.getNombreCompleto());
 
         if (usuario.getRol().equals("MEDICO")) {
