@@ -22,6 +22,7 @@ public class VisorView {
     private Line lineaMedicion;
     private Label lblDistancia;
     private Button btnVolver;
+    private Button btnMPR;
 
     public VisorView() {
         // 1. Inicializar componentes
@@ -56,10 +57,16 @@ public class VisorView {
         // 2. Construir el diseño
         raiz.setBottom(lblEstado);
 
+        // --- BOTÓN MPR ---
+        btnMPR = new Button("Abrir Reconstrucción 3D (MPR)");
+        btnMPR.setStyle("-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold;"); // Un color morado tecnológico
+        btnMPR.setMaxWidth(Double.MAX_VALUE);
+
         VBox panelIzquierdo = new VBox(10);
         panelIzquierdo.setStyle("-fx-padding: 15px; -fx-background-color: #f4f4f4;");
         panelIzquierdo.getChildren().addAll(
                 btnCargar,
+                btnMPR,
                 lblBrillo,
                 sliderBrillo,
                 lblContraste,
@@ -91,4 +98,5 @@ public class VisorView {
     public Line getLineaMedicion() { return lineaMedicion; }
     public Label getLblDistancia() { return lblDistancia; }
     public Button getBtnVolver() { return btnVolver; }
+    public Button getBtnMPR() { return btnMPR; }
 }

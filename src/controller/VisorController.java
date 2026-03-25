@@ -1,6 +1,7 @@
 package controller;
 
 import model.Usuario;
+import view.MPRView;
 import view.MedicoView;
 import controller.MedicoController;
 import javafx.scene.Scene;
@@ -28,6 +29,7 @@ public class VisorController {
     private VisorView vista;
     private Stage escenarioPrincipal;
     private Usuario medicoActual;
+    private File directorioActual;
     private List<Image> listaImagenes = new ArrayList<>();
     private int indiceActual = 0;
     private double inicioX;
@@ -87,12 +89,12 @@ public class VisorController {
             // Opcional: Mostramos en qué corte estamos en la barra inferior
             vista.getLblEstado().setText("Corte: " + (indiceActual + 1) + " / " + listaImagenes.size());
         });
-        vista.getSliderBrillo().valueProperty().addListener((observable, valorViejo, valorNuevo) -> {
-            aplicarFiltros();
+        vista.getSliderBrillo().valueProperty().addListener((
+                observable, valorViejo, valorNuevo) -> {aplicarFiltros();
         });
 
-        vista.getSliderContraste().valueProperty().addListener((observable, valorViejo, valorNuevo) -> {
-            aplicarFiltros();
+        vista.getSliderContraste().valueProperty().addListener((
+                observable, valorViejo, valorNuevo) -> {aplicarFiltros();
         });
 
         // --- HERRAMIENTA DE MEDICIÓN ---
@@ -150,10 +152,28 @@ public class VisorController {
             escenarioPrincipal.setScene(escenaMedico);
             escenarioPrincipal.setTitle("Panel Médico - " + medicoActual.getNombreCompleto());
         });
+
+        // --- ABRIR MÓDULO MPR 3D ---
+        vista.getBtnMPR().setOnAction(evento -> {
+            if (directorioActual == null) {
+                vista.getLblEstado().setText("Error: Primero debe cargar una tomografía.");
+                return;
+            }
+
+            // Instanciamos la nueva vista y controlador MPR
+            MPRView mprVista = new MPRView();
+            MPRController mprControlador = new MPRController(mprVista, escenarioPrincipal, medicoActual, directorioActual);
+
+            // Le damos una ventana más grande para que quepan las 3 pantallas
+            Scene escenaMPR = new Scene(mprVista.getRaiz(), 1000, 800);
+            escenarioPrincipal.setScene(escenaMPR);
+            escenarioPrincipal.setTitle("Visor Avanzado MPR 3D - " + medicoActual.getNombreCompleto());
+        });
     }
 
     // Nuestro motor de Streams intacto, pero actualizando los componentes a través de "vista.get..."
     public void cargarImagenesDesdeDirectorio(File directorio) {
+        this.directorioActual = directorio;
         try (Stream<Path> rutas = Files.list(directorio.toPath())) {
 
             listaImagenes = rutas
