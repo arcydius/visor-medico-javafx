@@ -17,6 +17,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
+
 public class MedicoController {
 
     private MedicoView vista;
@@ -53,7 +56,31 @@ public class MedicoController {
                 listaPacientes.add(p);
             }
 
-            vista.getTablaPacientes().setItems(listaPacientes);
+            FilteredList<Paciente> listaFiltrada = new FilteredList<>(listaPacientes, b -> true);
+
+            vista.getTxtBuscarDni().textProperty().addListener((observable, valorViejo, valorNuevo) -> {
+                listaFiltrada.setPredicate(paciente -> {
+                    // Si la caja de búsqueda está vacía, mostramos todos los pacientes
+                    if (valorNuevo == null || valorNuevo.isEmpty()) {
+                        return true;
+                    }
+
+                    String filtro = valorNuevo.toLowerCase();
+
+                    if (paciente.getDni().toLowerCase().contains(filtro)) {
+                        return true; // ¡Coincide! Lo mostramos en la tabla
+                    } else {
+                        return false; // No coincide. Lo ocultamos.
+                    }
+                });
+            });
+
+            // 3. Envolvemos la lista filtrada en una lista ordenable (para que las columnas se puedan ordenar por clic)
+            SortedList<Paciente> listaOrdenada = new SortedList<>(listaFiltrada);
+            listaOrdenada.comparatorProperty().bind(vista.getTablaPacientes().comparatorProperty());
+
+            // 4. Finalmente, metemos la lista super-poderosa en la tabla
+            vista.getTablaPacientes().setItems(listaOrdenada);
 
         } catch (SQLException e) {
             vista.getLblMensaje().setStyle("-fx-text-fill: red;");
@@ -90,7 +117,7 @@ public class MedicoController {
             }
 
             VisorView visorVista = new VisorView();
-            VisorController visorControlador = new VisorController(visorVista, escenarioPrincipal);
+            VisorController visorControlador = new VisorController(visorVista, escenarioPrincipal, medicoActual);
 
             visorControlador.cargarImagenesDesdeDirectorio(carpetaTomografia);
 

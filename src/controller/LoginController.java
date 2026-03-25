@@ -48,6 +48,12 @@ public class LoginController {
     private void autenticarUsuario(String usuarioStr, String claveStr) {
         try (Connection conn = ConexionDB.conectar()) {
 
+            if (conn == null) {
+                vista.getLblMensaje().setStyle("-fx-text-fill: #ffcccc; -fx-font-weight: bold; -fx-font-size: 15px;");
+                vista.getLblMensaje().setText("Servidor apagado. Por favor, enciende MySQL en XAMPP.");
+                return;
+            }
+
             // 1. Buscamos PRIMERO en la tabla de administradores
             String sqlAdmin = "SELECT * FROM administradores WHERE usuario = ? AND clave = ?";
             try (PreparedStatement pstmtAdmin = conn.prepareStatement(sqlAdmin)) {

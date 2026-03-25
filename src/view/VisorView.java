@@ -21,10 +21,20 @@ public class VisorView {
     private Slider sliderContraste;
     private Line lineaMedicion;
     private Label lblDistancia;
+    private Button btnVolver;
 
     public VisorView() {
         // 1. Inicializar componentes
         raiz = new BorderPane();
+
+        btnVolver = new Button("← Volver a Pacientes");
+        btnVolver.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;");
+
+        javafx.scene.layout.HBox cabeceraSuperior = new javafx.scene.layout.HBox();
+        cabeceraSuperior.setStyle("-fx-padding: 10px; -fx-background-color: #dcdde1;"); // Un gris claro de fondo
+        cabeceraSuperior.getChildren().add(btnVolver);
+
+        raiz.setTop(cabeceraSuperior);
         lblEstado = new Label("Estado: Esperando directorio");
         btnCargar = new Button("Cargar Directorio");
 
@@ -80,4 +90,5 @@ public class VisorView {
     public Slider getSliderContraste() { return sliderContraste; }
     public Line getLineaMedicion() { return lineaMedicion; }
     public Label getLblDistancia() { return lblDistancia; }
+    public Button getBtnVolver() { return btnVolver; }
 }

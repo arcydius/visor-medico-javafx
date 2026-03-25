@@ -1,5 +1,10 @@
 package controller;
 
+import model.Usuario;
+import view.MedicoView;
+import controller.MedicoController;
+import javafx.scene.Scene;
+
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
@@ -22,15 +27,17 @@ public class VisorController {
 
     private VisorView vista;
     private Stage escenarioPrincipal;
+    private Usuario medicoActual;
     private List<Image> listaImagenes = new ArrayList<>();
     private int indiceActual = 0;
     private double inicioX;
     private double inicioY;
 
     // El constructor une la vista con el controlador
-    public VisorController(VisorView vista, Stage escenarioPrincipal) {
+    public VisorController(VisorView vista, Stage escenarioPrincipal, Usuario medicoActual) {
         this.vista = vista;
         this.escenarioPrincipal = escenarioPrincipal;
+        this.medicoActual = medicoActual;
         inicializarEventos();
     }
 
@@ -128,6 +135,20 @@ public class VisorController {
 
             // Mostramos el resultado en la etiqueta con 2 decimales
             vista.getLblDistancia().setText(String.format("Distancia: %.2f mm", distanciaMilimetros));
+        });
+
+        // --- BOTÓN VOLVER AL DASHBOARD MÉDICO ---
+        vista.getBtnVolver().setOnAction(evento -> {
+            // Volvemos a crear la vista del panel médico
+            MedicoView medicoVista = new MedicoView();
+
+            // Le pasamos el escenario y nuestro usuario para no perder la sesión
+            MedicoController medicoControlador = new MedicoController(medicoVista, escenarioPrincipal, medicoActual);
+
+            // Cambiamos la escena
+            Scene escenaMedico = new Scene(medicoVista.getRaiz(), 800, 600);
+            escenarioPrincipal.setScene(escenaMedico);
+            escenarioPrincipal.setTitle("Panel Médico - " + medicoActual.getNombreCompleto());
         });
     }
 

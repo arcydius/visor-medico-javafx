@@ -14,6 +14,7 @@ import javafx.scene.text.Font;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import model.Paciente;
+import javafx.scene.control.TextField;
 
 import java.time.LocalDate;
 
@@ -23,6 +24,7 @@ public class MedicoView {
     private Label lblBienvenida;
     private Button btnCerrarSesion;
     private TableView<Paciente> tablaPacientes;
+    private TextField txtBuscarDni;
     private Button btnAbrirVisor;
     private Label lblMensaje;
 
@@ -56,6 +58,11 @@ public class MedicoView {
         Label lblTituloTabla = new Label("Lista de Pacientes Registrados");
         lblTituloTabla.setFont(new Font("Arial", 16));
 
+        txtBuscarDni = new TextField();
+        txtBuscarDni.setPromptText("🔍 Buscar paciente por DNI / Cédula...");
+        txtBuscarDni.setStyle("-fx-font-size: 14px; -fx-padding: 8px;");
+        txtBuscarDni.setMaxWidth(Double.MAX_VALUE);
+
         tablaPacientes = new TableView<>();
         tablaPacientes.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
@@ -71,7 +78,7 @@ public class MedicoView {
         // Añadimos las columnas a la tabla
         tablaPacientes.getColumns().addAll(colDni, colNombre, colFecha);
 
-        panelCentral.getChildren().addAll(lblTituloTabla, tablaPacientes);
+        panelCentral.getChildren().addAll(lblTituloTabla, txtBuscarDni, tablaPacientes);
         raiz.setCenter(panelCentral);
 
         // --- 3. CONTROLES INFERIORES (Bottom) ---
@@ -97,4 +104,5 @@ public class MedicoView {
     public TableView<Paciente> getTablaPacientes() { return tablaPacientes; }
     public Button getBtnAbrirVisor() { return btnAbrirVisor; }
     public Label getLblMensaje() { return lblMensaje; }
+    public TextField getTxtBuscarDni() { return txtBuscarDni; }
 }
