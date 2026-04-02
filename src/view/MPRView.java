@@ -20,9 +20,9 @@ public class MPRView {
     private Button btnVolver;
 
     // Las 3 pantallas de visualización
-    private ImageView vistaAxial;   // Vista desde arriba
-    private ImageView vistaCoronal; // Vista de frente
-    private ImageView vistaSagital; // Vista de perfil
+    private ImageView vistaAxial;
+    private ImageView vistaCoronal;
+    private ImageView vistaSagital;
 
     // Los 3 controles de navegación
     private Slider sliderAxial;

@@ -11,17 +11,15 @@ import java.util.List;
 
 public class VolumenTomografico {
 
-    // Aquí guardaremos las imágenes originales apiladas (El Eje Z)
     private List<Image> cortesAxiales;
-    private int ancho;       // Eje X
-    private int alto;        // Eje Y
-    private int profundidad; // Eje Z (Cantidad total de imágenes)
+    private int ancho;
+    private int alto;
+    private int profundidad;
 
     public VolumenTomografico() {
         cortesAxiales = new ArrayList<>();
     }
 
-    // Método para cargar toda la carpeta en RAM
     public boolean cargarDesdeDirectorio(File directorio) {
         cortesAxiales.clear();
 
