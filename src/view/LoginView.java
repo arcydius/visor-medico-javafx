@@ -1,20 +1,19 @@
 package view;
 
 import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.PerspectiveCamera;
+import javafx.scene.SceneAntialiasing;
+import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.AmbientLight;
 import javafx.scene.PointLight;
-import javafx.scene.PerspectiveCamera;
-import javafx.scene.SceneAntialiasing;
-import javafx.scene.SubScene;
+import javafx.scene.text.Font;
 
 public class LoginView {
 
@@ -31,37 +30,43 @@ public class LoginView {
         raiz.setStyle("-fx-padding: 50px; -fx-background-color: linear-gradient(to bottom, #2c3e50, #2980b9);");
 
         StackPane contenedor3D = new StackPane();
-        contenedor3D.setPrefSize(300, 300);
+        contenedor3D.setPrefSize(400, 400);
+        contenedor3D.setStyle("-fx-background-color: transparent;");
 
-        Cerebro3DView cerebro3D = new Cerebro3DView();
+        Cruz3DView cross3D = new Cruz3DView();
+        Group grupoRaiz3D = new Group();
+        grupoRaiz3D.getChildren().add(cross3D.getGrupoCruz());
 
-        SubScene escena3D = new SubScene(cerebro3D.getGrupoCerebro(), 300, 300, true, SceneAntialiasing.BALANCED);
-        escena3D.setFill(Color.rgb(44, 62, 80));
+        PointLight luzFrontal = new PointLight(Color.rgb(200, 200, 200));
+        luzFrontal.setTranslateX(0);
+        luzFrontal.setTranslateY(0);
+        luzFrontal.setTranslateZ(-150);
 
-        // ILUMINACIÓN
-        PointLight luzPrincipal = new PointLight(Color.WHITE);
-        luzPrincipal.setTranslateX(150);
-        luzPrincipal.setTranslateY(150);
-        luzPrincipal.setTranslateZ(300);
+// Luz de relleno desde atrás (para aclarar la parte oscura)
+        PointLight luzTrasera = new PointLight(Color.rgb(150, 150, 150));
+        luzTrasera.setTranslateX(0);
+        luzTrasera.setTranslateY(0);
+        luzTrasera.setTranslateZ(150); // detrás del modelo
 
-        PointLight luzAzul = new PointLight(Color.rgb(100, 150, 255));
-        luzAzul.setTranslateX(-120);
-        luzAzul.setTranslateY(80);
-        luzAzul.setTranslateZ(250);
+// Luces laterales suaves
+        PointLight luzIzq = new PointLight(Color.rgb(130, 130, 150));
+        luzIzq.setTranslateX(-120);
+        luzIzq.setTranslateY(20);
+        luzIzq.setTranslateZ(0);
 
-        PointLight luzCalida = new PointLight(Color.rgb(255, 200, 150));
-        luzCalida.setTranslateX(0);
-        luzCalida.setTranslateY(-100);
-        luzCalida.setTranslateZ(200);
+        PointLight luzDer = new PointLight(Color.rgb(130, 130, 150));
+        luzDer.setTranslateX(120);
+        luzDer.setTranslateY(20);
+        luzDer.setTranslateZ(0);
 
-        AmbientLight luzAmbiente = new AmbientLight(Color.rgb(100, 100, 120));
+        SubScene escena3D = new SubScene(grupoRaiz3D, 400, 400, true, SceneAntialiasing.BALANCED);
+        escena3D.setFill(Color.TRANSPARENT);
 
-        cerebro3D.getGrupoCerebro().getChildren().addAll(luzPrincipal, luzAzul, luzCalida, luzAmbiente);
-
-        // Configurar cámara
         PerspectiveCamera camara = new PerspectiveCamera(true);
-        camara.setTranslateZ(-220);
-        camara.setFieldOfView(35);
+        camara.setTranslateZ(-160);
+        camara.setFieldOfView(45);
+        camara.setNearClip(0.1);
+        camara.setFarClip(1000);
         escena3D.setCamera(camara);
 
         contenedor3D.getChildren().add(escena3D);
