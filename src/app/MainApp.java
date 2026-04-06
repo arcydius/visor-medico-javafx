@@ -17,7 +17,7 @@ public class MainApp extends Application{
 
         LoginController controladorLogin = new LoginController(vistaLogin, escenarioPrincipal);
 
-        Scene escena = new Scene(vistaLogin.getRaiz(), 600, 600);
+        Scene escena = new Scene(vistaLogin.getRaiz(), 600, 800);
 
         escenarioPrincipal.setTitle("Sistema Médico - Iniciar Sesión");
         escenarioPrincipal.setScene(escena);

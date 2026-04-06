@@ -148,12 +148,11 @@ public class VisorController {
             MedicoController medicoControlador = new MedicoController(medicoVista, escenarioPrincipal, medicoActual);
 
             // Cambiamos la escena
-            Scene escenaMedico = new Scene(medicoVista.getRaiz(), 800, 600);
-            escenarioPrincipal.setScene(escenaMedico);
+            escenarioPrincipal.getScene().setRoot(medicoVista.getRaiz());
             escenarioPrincipal.setTitle("Panel Médico - " + medicoActual.getNombreCompleto());
         });
 
-        // --- ABRIR MÓDULO MPR 3D ---
+        // --- MÓDULO MPR  ---
         vista.getBtnMPR().setOnAction(evento -> {
             if (directorioActual == null) {
                 vista.getLblEstado().setText("Error: Primero debe cargar una tomografía.");
@@ -165,13 +164,11 @@ public class VisorController {
             MPRController mprControlador = new MPRController(mprVista, escenarioPrincipal, medicoActual, directorioActual);
 
             // Le damos una ventana más grande para que quepan las 3 pantallas
-            Scene escenaMPR = new Scene(mprVista.getRaiz(), 1000, 800);
-            escenarioPrincipal.setScene(escenaMPR);
+            escenarioPrincipal.getScene().setRoot(mprVista.getRaiz());
             escenarioPrincipal.setTitle("Visor Avanzado MPR 3D - " + medicoActual.getNombreCompleto());
         });
     }
 
-    // Nuestro motor de Streams intacto, pero actualizando los componentes a través de "vista.get..."
     public void cargarImagenesDesdeDirectorio(File directorio) {
         this.directorioActual = directorio;
         try (Stream<Path> rutas = Files.list(directorio.toPath())) {

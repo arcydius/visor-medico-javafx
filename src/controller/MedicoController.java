@@ -60,7 +60,6 @@ public class MedicoController {
 
             vista.getTxtBuscarDni().textProperty().addListener((observable, valorViejo, valorNuevo) -> {
                 listaFiltrada.setPredicate(paciente -> {
-                    // Si la caja de búsqueda está vacía, mostramos todos los pacientes
                     if (valorNuevo == null || valorNuevo.isEmpty()) {
                         return true;
                     }
@@ -68,18 +67,16 @@ public class MedicoController {
                     String filtro = valorNuevo.toLowerCase();
 
                     if (paciente.getDni().toLowerCase().contains(filtro)) {
-                        return true; // ¡Coincide! Lo mostramos en la tabla
+                        return true;
                     } else {
-                        return false; // No coincide. Lo ocultamos.
+                        return false;
                     }
                 });
             });
 
-            // 3. Envolvemos la lista filtrada en una lista ordenable (para que las columnas se puedan ordenar por clic)
             SortedList<Paciente> listaOrdenada = new SortedList<>(listaFiltrada);
             listaOrdenada.comparatorProperty().bind(vista.getTablaPacientes().comparatorProperty());
 
-            // 4. Finalmente, metemos la lista super-poderosa en la tabla
             vista.getTablaPacientes().setItems(listaOrdenada);
 
         } catch (SQLException e) {
@@ -91,10 +88,16 @@ public class MedicoController {
     private void inicializarEventos() {
         // --- CERRAR SESIÓN ---
         vista.getBtnCerrarSesion().setOnAction(evento -> {
-            LoginView vistaLogin = new LoginView();
-            LoginController controladorLogin = new LoginController(vistaLogin, escenarioPrincipal);
-            Scene escenaLogin = new Scene(vistaLogin.getRaiz(), 400, 350);
+            LoginView loginVista = new LoginView();
+            LoginController loginControlador = new LoginController(loginVista, escenarioPrincipal);
+
+            Scene escenaLogin = new Scene(loginVista.getRaiz(), 600, 600);
             escenarioPrincipal.setScene(escenaLogin);
+            escenarioPrincipal.setMaximized(false);
+            escenarioPrincipal.setWidth(600);
+            escenarioPrincipal.setHeight(800);
+            escenarioPrincipal.centerOnScreen();
+
             escenarioPrincipal.setTitle("Sistema Médico - Iniciar Sesión");
         });
 
@@ -123,7 +126,7 @@ public class MedicoController {
 
             Scene escenaVisor = new Scene(visorVista.getRaiz(), 900, 700);
             escenarioPrincipal.setScene(escenaVisor);
-            escenarioPrincipal.setTitle("Visor 3D - Paciente: " + pacienteSeleccionado.getNombreCompleto());
+            escenarioPrincipal.setTitle("Visor Tomográfico: " + pacienteSeleccionado.getNombreCompleto());
         });
     }
 }

@@ -80,8 +80,8 @@ public class MPRController {
             VisorController visorControlador = new VisorController(visorVista, escenarioPrincipal, medicoActual);
             visorControlador.cargarImagenesDesdeDirectorio(directorioActual); // Recarga la carpeta
 
-            Scene escenaVisor = new Scene(visorVista.getRaiz(), 900, 700);
-            escenarioPrincipal.setScene(escenaVisor);
+            escenarioPrincipal.getScene().setRoot(visorVista.getRaiz());
+            escenarioPrincipal.setTitle("Visor Tomográfico - " + medicoActual.getNombreCompleto());
         });
     }
 

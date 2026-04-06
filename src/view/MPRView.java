@@ -69,9 +69,14 @@ public class MPRView {
         cuadricula.add(panelCoronal, 1, 0);   // Arriba Derecha
         cuadricula.add(panelSagital, 0, 1);   // Abajo Izquierda
 
-        // La celda [1, 1] (Abajo Derecha) la dejamos vacía por ahora, o podrías poner info del paciente allí después
+        javafx.scene.control.ScrollPane panelDesplazable = new javafx.scene.control.ScrollPane(cuadricula);
+        panelDesplazable.setFitToWidth(true); // Hace que el scroll se adapte al ancho
 
-        raiz.setCenter(cuadricula);
+        // Le ponemos el mismo fondo oscuro médico para que no se vea un borde blanco feo
+        panelDesplazable.setStyle("-fx-background-color: #1e1e1e; -fx-background: #1e1e1e; -fx-border-color: #1e1e1e;");
+
+        // Metemos el panel desplazable al centro en lugar de la cuadrícula directa
+        raiz.setCenter(panelDesplazable);
     }
 
     // Método auxiliar para no repetir código al crear cada "pantallita"
