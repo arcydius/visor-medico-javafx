@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import view.ReporteView;
 import view.VisorView;
 
 import java.io.File;
@@ -166,6 +167,15 @@ public class VisorController {
             // Le damos una ventana más grande para que quepan las 3 pantallas
             escenarioPrincipal.getScene().setRoot(mprVista.getRaiz());
             escenarioPrincipal.setTitle("Visor Avanzado MPR 3D - " + medicoActual.getNombreCompleto());
+        });
+
+        // --- ABRIR FORMULARIO DE REPORTE ---
+        vista.getBtnReporte().setOnAction(evento -> {
+            ReporteView reporteVista = new ReporteView();
+            ReporteController reporteControlador = new ReporteController(reporteVista, escenarioPrincipal, medicoActual, directorioActual);
+
+            escenarioPrincipal.getScene().setRoot(reporteVista.getRaiz());
+            escenarioPrincipal.setTitle("Redacción de Reporte - " + medicoActual.getNombreCompleto());
         });
     }
 

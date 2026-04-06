@@ -23,9 +23,9 @@ public class VisorView {
     private Label lblDistancia;
     private Button btnVolver;
     private Button btnMPR;
+    private Button btnReporte;
 
     public VisorView() {
-        // 1. Inicializar componentes
         raiz = new BorderPane();
 
         btnVolver = new Button("← Volver a Pacientes");
@@ -48,25 +48,27 @@ public class VisorView {
         lblDistancia = new Label("Distancia: 0.0 mm");
         lblDistancia.setStyle("-fx-font-weight: bold; -fx-text-fill: red;");
 
-        // 2. Configuración de la Línea de Medición
         lineaMedicion = new Line();
-        lineaMedicion.setStroke(Color.RED);     // Color rojo médico
-        lineaMedicion.setStrokeWidth(2.0);      // Grosor de la línea
-        lineaMedicion.setVisible(false);        // La ocultamos hasta que el usuario haga clic
+        lineaMedicion.setStroke(Color.RED);
+        lineaMedicion.setStrokeWidth(2.0);
+        lineaMedicion.setVisible(false);
 
-        // 2. Construir el diseño
         raiz.setBottom(lblEstado);
 
-        // --- BOTÓN MPR ---
         btnMPR = new Button("Abrir Reconstrucción 3D (MPR)");
         btnMPR.setStyle("-fx-background-color: #8e44ad; -fx-text-fill: white; -fx-font-weight: bold;"); // Un color morado tecnológico
         btnMPR.setMaxWidth(Double.MAX_VALUE);
+
+        btnReporte = new Button("📝 Escribir Reporte");
+        btnReporte.setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-font-weight: bold;");
+        btnReporte.setMaxWidth(Double.MAX_VALUE);
 
         VBox panelIzquierdo = new VBox(10);
         panelIzquierdo.setStyle("-fx-padding: 15px; -fx-background-color: #f4f4f4;");
         panelIzquierdo.getChildren().addAll(
                 btnCargar,
                 btnMPR,
+                btnReporte,
                 lblBrillo,
                 sliderBrillo,
                 lblContraste,
@@ -87,8 +89,6 @@ public class VisorView {
         raiz.setCenter(contenedorImagen);
     }
 
-    // --- GETTERS (Encapsulamiento) ---
-    // El Controlador necesitará acceder a estos elementos para darles vida
     public BorderPane getRaiz() { return raiz; }
     public Button getBtnCargar() { return btnCargar; }
     public Label getLblEstado() { return lblEstado; }
@@ -99,4 +99,5 @@ public class VisorView {
     public Label getLblDistancia() { return lblDistancia; }
     public Button getBtnVolver() { return btnVolver; }
     public Button getBtnMPR() { return btnMPR; }
+    public Button getBtnReporte() { return btnReporte; }
 }
